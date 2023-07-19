@@ -1,0 +1,222 @@
+---
+title: iptables
+date: 2017-11-19
+updated: 2017-11-20
+tags:
+  - iptables
+categories:
+  - note
+abbrlink: 736b1750
+---
+
+## 概述
+
+一款用来定义防护墙策略的防火墙管理工具。(虽然我们使用service iptables start启动iptables"服务"，但是其实准确的来说，iptables并没有一个守护进程，所以并不能算是真正意义上的服务，而应该算是内核提供的功能。)
+## 入门
+### 防火墙
+
+主要功能依据策略对穿越防护墙的流量进行过滤。
+#### 防护墙的作用
+- 切割被信任区与不被信任区的网段
+- 划分出可提供Internet的服务与受保护的服务
+- 分析出可接受与不可接受的数据包状态
+#### 从逻辑层面划分
+##### 网络防火墙
+在网络入口处进行防护，对防火墙背后的局域网进行服务
+##### 主机防火墙
+对单个主机进行防护
+#### 从物理层面划分
+##### 硬件防火墙
+防火墙程序做到芯片里面，由硬件执行这些功能。
+##### 软件防火墙
+计算机硬件和软件的结合，使Internet与Intranet之间建立起一个安全网关
+## Netfilter
+通过iptables，将配置的按策略交由内核层面的网络过滤器中，这个过滤器是netfilter，是真正意义上的防火墙
+Netfilter是Linux操作系统核心层内部的一个数据包处理模块，它具有如下功能：
+## 规则链与策略
+防火墙从上至下读取配置的策略规则，在找到匹配项后立即结束匹配，去执行匹配项中定义的行为，如果没有匹配到相应的策略，就去执行系统默认的策略
+### 策略设置
+#### 通（放行）
+当防护墙的默认策略为拒绝时，需要设置允许规则，否则任何流量都无法进来
+#### 堵（阻止）
+当防火墙的默认策略为允许时，需要设置拒绝规则，否则任何流量都能进来
+### 规则链
+iptables把用于处理或过滤流量的策略条目称之为规则，多条规则可以组成规则链，按照数据包处理位置的不同可进行分类
+## 常用服务术语
+- ACCEPT（允许流量通过）
+- REJECT（拒绝流量通过）拒绝流量后会再回复一条内容为“您的信息已收到，但被丢弃”的信息
+- LOG(记录日志信息）
+- DROP(拒绝流量通过）直接将流量丢弃而不响应
+
+
+# 四表五链
+## 四表
+把具有相同功能的规则的集合叫做"表"，不同功能的规则，我们可以放置在不同的表中进行管理，iptables定义了4种表，每种表对应了不同的功能，而我们定义的规则也都逃脱不了这4种功能的范围
+- filter表（与本机有关）
+  负责过滤功能，防火墙；内核模块：iptables_filter
+- nat表（与后端有关）
+  network address translation，网络地址转换功能；内核模块：iptable_nat
+- mangle表（与标记有关）
+  拆解报文，做出修改，并重新封装 的功能；iptable_mangle
+- raw表
+  关闭nat表上启用的连接追踪机制；iptable_raw
+## 五链
+现在，我们想象一下，这些"关卡"在iptables中为什么被称作"链"呢？我们知道，防火墙的作用就在于对经过的报文匹配"规则"，然后执行对应的"动作",所以，当报文经过这些关卡的时候，则必须匹配这个关卡上的规则，但是，这个关卡上可能不止有一条规则，而是有很多条规则，当我们把这些规则串到一个链条上的时候，就形成了"链",所以，我们把每一个"关卡"想象成如下图中的模样  ，这样来说，把他们称为"链"更为合适，每个经过这个"关卡"的报文，都要将这条"链"上的所有规则匹配一遍，如果有符合条件的规则，则执行规则对应的动作。
+- prerouting
+- input
+- output
+- forward
+- postrouting
+# 表链关系
+## 链-------->表
+- PREROUTING  的规则可以存在于：raw表，mangle表，nat表。
+- INPUT  的规则可以存在于：mangle表，filter表，（centos7中还有nat表，centos6中没有）。
+- FORWARD  的规则可以存在于：mangle表，filter表。
+- OUTPUT  的规则可以存在于：raw表mangle表，nat表，filter表。
+- POSTROUTING      的规则可以存在于：mangle表，nat表。
+## 表-------->链
+
+- raw   表中的规则可以被哪些链使用：PREROUTING，OUTPUT
+- mangle 表中的规则可以被哪些链使用：PREROUTING，INPUT，FORWARD，OUTPUT，POSTROUTING
+- nat  表中的规则可以被哪些链使用：PREROUTING，OUTPUT，POSTROUTING（centos7中还有INPUT，centos6中没有）
+- filter 表中的规则可以被哪些链使用：INPUT，FORWARD，OUTPUT
+- prerouting链中的规则存放于三张表中，而这三张表中的规则执行的优先级如下：
+
+
+iptables定义了4张"表",当他们处于同一条"链"时，优先级次序（由高而低）：raw --> mangle --> nat --> filter
+
+# 详解规则
+## 匹配条件
+### 基本匹配条件
+- 源地址Source IP，目标地址 Destination IP
+### 拓展匹配条件
+- 除了上述的条件可以用于匹配，还有很多其他的条件可以用于匹配，这些条件泛称为扩展条件，这些扩展条件其实也是netfilter中的一部分，只是以模块的形式存在，如果想要使用这些条件，则需要依赖对应的扩展模块。
+## 处理动作
+处理动作在iptables中被称为target（这样说并不准确，我们暂且这样称呼），动作也可以分为基本动作和扩展动作。
+- ACCEPT ：允许数据包通过
+- DROP：直接丢弃数据包，不给任何回应信息，这时候客户端会感觉自己的请求泥牛入海了，过了超时时间才会有反应。
+- REJECT：拒绝数据包通过，必要时会给数据发送端一个响应的信息，客户端刚请求就会收到拒绝的信息。
+- SNAT ：源地址转换，解决内网用户用同一个公网地址上网的问题。
+- MASQUERADE：是SNAT的一种特殊形式，适用于动态的、临时会变的ip上。
+- DNAT：目标地址转换。
+- REDIRECT：在本机做端口映射。
+- LOG：在/var/log/messages文件中记录日志信息，然后将数据包传递给下一条规则，也就是说除了记录以外不对数据包做任何其他操作，仍然让下一条规则去匹配。
+
+# 常用命令参考：
+#### 常用参数
+| 参数        | 作用                                            |
+| :---------- | :---------------------------------------------- |
+| -P          | 设置默认策略                                    |
+| -F          | 清空规则链                                      |
+| -L          | 查看规则链                                      |
+| -A          | 在规则链的末尾加入新规则                        |
+| -I num      | 在规则链的头部加入新规则                        |
+| -D num      | 删除某一条规则                                  |
+| -s          | 匹配来源地址 IP/MASK，加叹号“!”表示除这个 IP 外 |
+| -d          | 匹配目标地址                                    |
+| -i 网卡名称 | 匹配从这块网卡流入的数据                        |
+| -o 网卡名称 | 匹配从这块网卡流出的数据                        |
+| -p          | p匹配协议，如TCP，UDP，ICMP                     |
+| --dport num | 匹配目标端口号                                  |
+| --sport num | 匹配来源端口号                                  |
+
+
+```shell
+iptables [-t tables] [-L] [-nv]
+-t：后面接table
+-L:列出目前的table规则
+-n:不进行IP与HOSTNAME的反查，显示信息速度会快很多
+-v:列出更多信息，包括通过该规则的数据包总位数、相关的网络接口等
+
+[root@localhost ~]# iptables -L -n
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED 
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state NEW tcp dpt:22 
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state NEW tcp dpt:80 
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state NEW tcp dpt:3306 
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0           reject-with icmp-host-prohibited 
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0           reject-with icmp-host-prohibited 
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination 
+
+[root@localhost ~]# iptables-save
+# Generated by iptables-save v1.4.7 on Mon Jul 29 09:27:47 2019
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [7630923:462585237]
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT 
+-A INPUT -p icmp -j ACCEPT 
+-A INPUT -i lo -j ACCEPT 
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT 
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT 
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 3306 -j ACCEPT 
+-A INPUT -j REJECT --reject-with icmp-host-prohibited 
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited 
+COMMIT
+# Completed on Mon Jul 29 09:27:47 2019
+
+
+iptables [-t tables] [-FXZ]
+-F:清除所有已已定值规则
+-X:除掉所有用户“自定义”的chain
+-Z:将所有的chain 的计数与流量统计归零
+
+iptables [-t nat] -P [INPUT,OUTPUT,FORWARD] [ACCEPT,DROP]
+-P:定义策略
+
+iptables [-AI 链名] [-io 网络接口] [-p 协议] [-s 来源IP/网络] [-d 目标IP/网络] -j [ACCEPT|DROP|LOG]
+
+iptables -A INPUT -i lo -j ACCEPT
+
+iptables -A INPUT -s 192.168.2.17 -j LOG
+
+iptables [-AI 链名] [-io 网络接口] [-p 协议] [-s 来源IP/网络] [--sport 端口范围] [-d 目标IP/网络] [--dport 端口范围] -j [ACCEPT|DROP|LOG]
+
+iptables -A INPUT [-m state] [--state 状态]
+
+iptables -A INPUT [-p icmp] [--icmp-type 类型] -j ACCEPT
+
+iptables --line-number -nL INPUT
+
+iptables -t -I INPUT 2 -s 192.168.1.1 -j DROP
+
+iptables -t  -D INPUT 3
+
+iptables -D INPUT -s 192.168.1.146 -j ACCEPT
+
+iptables -R INPUT 1 -s 192.168.1.146 -j REJECT
+
+service iptables save
+service iptables restart
+iptables-save > /etc/sysconfig/iptables
+
+iptables-restore < /etc/sysconfig/ipables
+
+iptablse -t -A INPUT ! -s 192.168.1.146 -j ACCEPT
+
+iptables -I INPUT -s 192.168.1.146 -p tcp -m multiport --dport 22,36,80 -j DROP
+
+iptables -I INPUT -m iprange --src-range 192.168.1.127-192.168.1.146 -j DROP
+
+--dst-range
+
+iptables -I INPUT -m string --algo bm --string "!@#$" -j REJECT
+
+iptables -I OUTPUT -p tcp --dport 80 -m time --timestart 09:00:00 --timestop 18:00:00 -j REJECT
+
+iptables -I OUTPUT -p tcp --dport 80 -m time --weekdays6,7 -j REJECT
+
+iptables -I OUTPUT -p tcp --dport 80 -m time --monthdays 6,7 -j REJECT
+
+iptables -I OUTPUT -p tcp --dport 80 -m time --weekdays 5 --monthdays 6,7 -j REJECT
+
+iptables -I OUTPUT -p tcp --dport 80 -m time --datestart 2019-08-01 --datestop 2019-09-01 -j REJECT
+```
