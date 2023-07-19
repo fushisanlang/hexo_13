@@ -13,11 +13,7 @@
 - class_name: 个人网站 
   class_desc: 
   link_list:
-    - name: 道
-      link: https://dao.fushisanlang.cn 
-      avatar: https://img14.360buyimg.com/ddimg/jfs/t1/195167/24/10907/26653/60dc00ecE400e580d/fa8c6965466d2299.jpg 
-      descr: 正在开发的小游戏 
-
+ 
     - name: git 
       link: https://git.fushisanlang.cn
       avatar: https://img14.360buyimg.com/ddimg/jfs/t1/195167/24/10907/26653/60dc00ecE400e580d/fa8c6965466d2299.jpg 
