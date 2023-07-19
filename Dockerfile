@@ -9,6 +9,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk add git
 COPY --from=base /blog /blog
 WORKDIR /blog
+RUN date > buildtime
 RUN git pull gitee master
 RUN git add . 
 RUN git config --global user.email 313346216@qq.com 
