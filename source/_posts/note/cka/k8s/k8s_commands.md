@@ -6,6 +6,7 @@ tags:
   - kubernetes
 categories:
   - note
+abbrlink: e77a90be
 date: 2023-09-19 00:00:00
 ---
 
