@@ -5,6 +5,7 @@ tags:
 categories:
   - windows
   - wsl2
+abbrlink: d2b1431b
 date: 2023-10-24 00:00:00
 ---
 
