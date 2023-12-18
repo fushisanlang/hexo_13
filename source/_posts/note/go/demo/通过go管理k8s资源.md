@@ -1,12 +1,13 @@
 ---
 title: 通过go管理k8s资源
-date: 2023-12-18
 tags:
   - go
   - demo
   - kubenetes
 categories:
   - demo
+abbrlink: 8ca5285
+date: 2023-12-18 00:00:00
 ---
 
 # 通过go管理k8s资源
