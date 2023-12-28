@@ -1,12 +1,12 @@
 ---
 title: 中文输出
-date: 2023-12-28
-
 tags:
   - go
   - demo
 categories:
   - demo
+abbrlink: 6e9056b1
+date: 2023-12-28 00:00:00
 ---
 windows下，cmd对中文指出不好，通过fmt包输出的中文会乱码。   
 可以使用以下demo，对cmd的语言预配置。   
