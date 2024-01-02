@@ -222,7 +222,7 @@ deploy-by-helm:
   image: harbor.xxx/cicd/mgoltzsche/podman:5.1
   script:
     - cd cidemo-chart
-    - docker run -v `pwd`/../config:/tmp/config.aks harbor.avepoint.net/cicd/helm-kubectl-yq:alpine-3.17.2 helm --kubeconfig /tmp/config.aks upgrade cidemo --set pythonDomain=$PYTHON_DOMAIN,dotnetDomain=$DOTNET_DOMAIN,pythonImageTag=$IMAGE_VERSION,dotnetImageTag=$IMAGE_VERSION  .
+    - docker run -v `pwd`/../config:/tmp/config.aks harbor./cicd/helm-kubectl-yq:alpine-3.17.2 helm --kubeconfig /tmp/config.aks upgrade cidemo --set pythonDomain=$PYTHON_DOMAIN,dotnetDomain=$DOTNET_DOMAIN,pythonImageTag=$IMAGE_VERSION,dotnetImageTag=$IMAGE_VERSION  .
   rules:
     - if: '$CI_COMMIT_BRANCH == "1"'
 check-version:   
