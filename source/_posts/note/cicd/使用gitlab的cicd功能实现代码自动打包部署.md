@@ -108,7 +108,7 @@ build:
 container_scanning:
   stage: container_scanning
   image:
-    name: harbor.avepoint.net/basic/trivy@sha256:e11e055f11fcc06425472a9f7c118ef0fe043cc4404da7d7dcbe7ce356281d2b
+    name: harbor.net/basic/trivy@sha256:e11e055f11fcc06425472a9f7c118ef0fe043cc4404da7d7dcbe7ce356281d2b
     entrypoint: [""]
   variables:
     # No need to clone the repo, we exclusively work on artifacts.  See
@@ -186,7 +186,7 @@ build:
 container_scanning:
   stage: container_scanning
   image:
-    name: harbor.avepoint.net/basic/trivy@sha256:e11e055f11fcc06425472a9f7c118ef0fe043cc4404da7d7dcbe7ce356281d2b
+    name: harbor.net/basic/trivy@sha256:e11e055f11fcc06425472a9f7c118ef0fe043cc4404da7d7dcbe7ce356281d2b
     entrypoint: [""]
   variables:
     # No need to clone the repo, we exclusively work on artifacts.  See

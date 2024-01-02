@@ -396,7 +396,7 @@ def sendMessage(rebotKey,messageStr):
 
 try:
   newVersion=sys.argv[1]
-  rebotKey = sys.argv[2]    # "19d6257a-8ed8-4e09-b802-9f79107d2258"        
+  rebotKey = sys.argv[2]     
   checkUrl = sys.argv[3]   #checkUrl="http://aks.c4893a3171c1456fbd55.eastus.aksapp.io/api/health"
   serverName = sys.argv[4]
 except:
