@@ -18,7 +18,7 @@ alias sdocker="sudo docker"
 
 # update from gitee
 cd ${workDir}
-git pull gitee master
+git pull origin master
 
 # copy file
 cd ${dockerfileDir}
@@ -38,7 +38,7 @@ sdocker run -d --name ${dockerContainerName} -p ${dockerContainerPort}:80 --rest
 # update git to origin
 sleep 10
 cd ${workDir}
-git pull gitee master
+git pull origin master
 git add .
 git commit -m 'auto commit by docker build' 
 git push origin master 
