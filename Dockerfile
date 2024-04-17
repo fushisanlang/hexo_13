@@ -11,6 +11,7 @@ RUN apk add git
 COPY --from=base /blog /blog
 WORKDIR /blog
 RUN date > buildtime
+RUN git add . && git commit -m "auto commit by docker build" && git push
 
 FROM nginx:alpine
 COPY --from=upload /blog/public /usr/share/nginx/html
