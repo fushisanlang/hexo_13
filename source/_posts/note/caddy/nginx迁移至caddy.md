@@ -1,14 +1,13 @@
 ---
 title: nginx迁移至caddy
-date: 2024-04-17
-
 tags:
   - nginx
   - caddy
   - docker
 categories:
   - note
-
+abbrlink: 925092d9
+date: 2024-04-17 00:00:00
 ---
 
 ## 背景说明

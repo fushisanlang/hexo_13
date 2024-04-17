@@ -7,6 +7,7 @@ tags:
   - aks
 categories:
   - note
+abbrlink: d67b3a47
 ---
 ```shell
 az aks nodepool add \
