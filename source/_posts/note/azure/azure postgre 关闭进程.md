@@ -6,6 +6,7 @@ tags:
   - postgre sql
 categories:
   - note
+abbrlink: 404a4725
 ---
 ```sql
 -- 查找要终止的进程的PID
