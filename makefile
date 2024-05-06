@@ -1,5 +1,8 @@
 SHELL:=bash
 DATE := $(shell date +"%Y%m%d")
+
+all: pull build update
+
 pull:
 	git pull
 
@@ -10,4 +13,3 @@ update:
 	cd /data/docker-compose/blog && sed "s/image:\  blog:.*/image:\  blog:${DATE}_v$(shell docker images|grep blog|grep ${DATE_VER} | wc -l)/g"  docker-compose.yaml && docker-compose down && docker-compose up -d
 clean:
 
-all: pull build update
