@@ -1,11 +1,12 @@
 ---
 title: ACM(AWS Certificate Manageer)证书导入
-date: 2024-05-06
 tags:
   - AWS
   - ACM
 categories:
   - note
+abbrlink: 696e4cc
+date: 2024-05-06 00:00:00
 ---
 
 # ACM(AWS Certificate Manageer)证书导入

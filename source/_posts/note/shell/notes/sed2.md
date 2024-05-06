@@ -1,11 +1,12 @@
 ---
 title: sed小技巧
-date: 2024-04-29
 tags:
   - sed
   - shell
 categories:
   - note
+abbrlink: 938a79eb
+date: 2024-04-29 00:00:00
 ---
 
 
