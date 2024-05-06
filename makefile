@@ -1,8 +1,16 @@
 SHELL:=bash
-DATE_VER := $(shell date +"%Y%m%d")
-
-update_from_git:
+DATE := $(shell date +"%Y%m%d")
+VERSION := $(shell docker images|grep blog|grep ${DATE_VER} | wc -l)
+pull:
 	git pull
 
-build: update_from_git
-	docker build . -t blog:${DATE_VER}_v$(shell docker images|grep blog|grep ${DATE_VER} | wc -l)
+build:
+	docker build . -t blog:${DATE}_v${VERSION}
+
+update:
+	cd /data/docker-compose/blog
+	sed "s/image:\  blog:.*/image:\  blog:${DATE}_v${VERSION}/g"  docker-compose.yaml
+	docker-compose down
+	docker-compose up -d
+
+.DEFAULT_GOAL: pull build update
