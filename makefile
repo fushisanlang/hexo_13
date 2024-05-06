@@ -8,8 +8,7 @@ build:
 	docker build . -t blog:${DATE}_v${VERSION}
 
 update:
-	cd /data/docker-compose/blog
-	sed "s/image:\  blog:.*/image:\  blog:${DATE}_v${VERSION}/g"  docker-compose.yaml
+	cd /data/docker-compose/blog && sed "s/image:\  blog:.*/image:\  blog:${DATE}_v${VERSION}/g"  docker-compose.yaml
 	docker-compose down
 	docker-compose up -d
 
