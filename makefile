@@ -13,4 +13,4 @@ update:
 	docker-compose down
 	docker-compose up -d
 
-.DEFAULT_GOAL: pull build update
+all: pull build update
