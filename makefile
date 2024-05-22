@@ -12,4 +12,4 @@ build:
 update:
 	cd /data/docker-compose/blog && sed -i "s/image:\ blog:.*/image:\ blog:v${DATE}/g"  docker-compose.yaml && docker-compose down && docker-compose up -d
 clean:
-	
+	docker images|grep blog|grep -v 1716341649 | while read name ; do docker rmi `echo $${name}|awk '{print $$3}'` ; done	
