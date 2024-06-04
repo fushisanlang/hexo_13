@@ -1,4 +1,7 @@
 ---
+abbrlink: 742e04d5
+---
+---
 title: golang中文输出2
 tags:
   - go
