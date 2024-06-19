@@ -15,3 +15,4 @@ RUN git add . && git commit -m "auto commit by docker build" && git push
 
 FROM nginx:alpine
 COPY --from=upload /blog/public /usr/share/nginx/html
+COPY ads.txt /usr/share/nginx/html
