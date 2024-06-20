@@ -1,14 +1,11 @@
 ---
-abbrlink: 742e04d5
----
----
 title: golang中文输出2
 tags:
   - go
   - note
 categories:
   - note
-
+abbrlink: 742e04d5
 date: 2024-06-04 00:00:00
 ---  
 windows下，cmd对中文指出不好，通过fmt包输出的中文会乱码。   
