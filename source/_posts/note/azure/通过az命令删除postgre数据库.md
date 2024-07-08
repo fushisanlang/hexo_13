@@ -7,6 +7,7 @@ tags:
   - postgre
 categories:
   - note
+abbrlink: 6cf7500b
 ---
 ```shell
 az postgres flexible-server db delete --resource-group ${rg} --server-name ${sn} --database-name ${dbname} --yes
