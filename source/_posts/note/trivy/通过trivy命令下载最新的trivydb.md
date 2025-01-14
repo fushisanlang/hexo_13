@@ -1,11 +1,11 @@
 ---
 title: 通过trivy命令下载最新的trivydb
-date: 2025-01-14
- 
 tags:
   - trivy
 categories:
   - note
+abbrlink: 7bd9c6c5
+date: 2025-01-14 00:00:00
 ---
 ## 前言
 因为国内网络原因，自动更新db的trivy经常遇到更新db时候超时。   
