@@ -1,12 +1,12 @@
 ---
 title: hugo 初使用
-date: 2025-07-18
 tags:
   - blog
   - hugo
 categories:
   - note
-
+abbrlink: 2621e7cd
+date: 2025-07-18 00:00:00
 ---
 #hugo 初使用
 
