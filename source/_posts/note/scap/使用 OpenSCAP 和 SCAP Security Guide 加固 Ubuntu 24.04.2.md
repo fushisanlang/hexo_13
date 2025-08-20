@@ -1,12 +1,13 @@
 ---
-title: 使用 OpenSCAP 和 SCAP Security Guide 加固 Ubuntu 24.04.2 
-date: 2025-08-20
+title: 使用 OpenSCAP 和 SCAP Security Guide 加固 Ubuntu 24.04.2
 tags:
   - linux
   - OpenSCAP
   - scap
 categories:
   - note
+abbrlink: '8e130763'
+date: 2025-08-20 00:00:00
 ---
 
 # 使用 OpenSCAP 和 SCAP Security Guide 加固 Ubuntu 24.04.2 
