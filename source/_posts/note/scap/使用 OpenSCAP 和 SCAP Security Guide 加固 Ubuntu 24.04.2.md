@@ -6,7 +6,7 @@ tags:
   - scap
 categories:
   - note
-abbrlink: '8e130763'
+abbrlink: '8e130773'
 date: 2025-08-20 00:00:00
 ---
 
@@ -19,13 +19,13 @@ date: 2025-08-20 00:00:00
 ## TL;DR（最短路径）
 1. 安装工具：
    ```bash
-   sudo apt update && sudo apt install -y openscap-scanner
+   sudo apt update && sudo apt install -y  libopenscap8
    oscap --version   # 确认安装（例：OpenSCAP command line tool (oscap) 1.3.9）
    ```
 2. 下载 SSG 内容并解压：
    ```bash
-   wget https://github.com/ComplianceAsCode/content/releases/download/v0.1.76/scap-security-guide-0.1.76.zip
-   unzip scap-security-guide-0.1.76.zip && cd scap-security-guide-0.1.76
+   wget https://github.com/ComplianceAsCode/content/releases/download/v0.1.77/scap-security-guide-0.1.77.zip
+   unzip scap-security-guide-0.1.77.zip && cd scap-security-guide-0.1.77
    ```
 3. 查看 Ubuntu 24.04 的数据流（DS）文件并枚举可用配置：
    ```bash
@@ -67,9 +67,9 @@ oscap --version
 
 ## 获取并使用 SSG 内容
 ```bash
-wget https://github.com/ComplianceAsCode/content/releases/download/v0.1.76/scap-security-guide-0.1.76.zip
-unzip scap-security-guide-0.1.76.zip
-cd scap-security-guide-0.1.76
+wget https://github.com/ComplianceAsCode/content/releases/download/v0.1.77/scap-security-guide-0.1.77.zip
+unzip scap-security-guide-0.1.77.zip
+cd scap-security-guide-0.1.77
 ```
 
 常见文件：
@@ -160,4 +160,4 @@ oscap xccdf eval   --profile xccdf_org.ssgproject.content_profile_cis_level1_ser
 
 ---
 
-> 注：上述命令基于 Ubuntu 24.04（Noble Numbat）与 SSG v0.1.76，若后续版本更新，请以新版本数据流（`ssg-ubuntu2404-ds.xml`）为准，并留意变更说明。
+> 注：上述命令基于 Ubuntu 24.04（Noble Numbat）与 SSG v0.1.77，若后续版本更新，请以新版本数据流（`ssg-ubuntu2404-ds.xml`）为准，并留意变更说明。
