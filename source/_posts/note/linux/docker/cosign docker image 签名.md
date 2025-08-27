@@ -90,7 +90,15 @@ cosign sign --key cosign.key --tlog-upload=false harborpro.fuckave.net/devops/ca
 在客户或内网环境中验证镜像签名，不依赖公有 Rekor：
 
 ```bash
-cosign verify --key cosign.pub --offline harborpro.fuckave.net/devops/caddy:trust
+export COSIGN_EXPERIMENTAL=1
+export COSIGN_EXPERIMENTAL_DISABLE_TUF=1
+
+cosign verify \
+  --key cosign.pub \
+  --offline \
+  --insecure-ignore-tlog=true \
+  --private-infrastructure=true \
+  harborpro.fuckave.net/devops/caddy:trust
 ```
 
 验证通过后，会显示签名者、镜像 digest 等信息。
@@ -135,6 +143,14 @@ docker inspect --format='{{index .RepoDigests 0}}' harborpro.fuckave.net/devops/
 cosign sign --key cosign.key --tlog-upload=false harborpro.fuckave.net/devops/caddy@sha256:3ebdac0a04a6802fdf72da35e476866e5f34e1a717a921dff2b2561d1ce2e96e
 
 # 离线验证签名
-cosign verify --key cosign.pub --offline harborpro.fuckave.net/devops/caddy:trust
+export COSIGN_EXPERIMENTAL=1
+export COSIGN_EXPERIMENTAL_DISABLE_TUF=1
+
+cosign verify \
+  --key cosign.pub \
+  --offline \
+  --insecure-ignore-tlog=true \
+  --private-infrastructure=true \
+  harborpro.fuckave.net/devops/caddy:trust
 ```
 
