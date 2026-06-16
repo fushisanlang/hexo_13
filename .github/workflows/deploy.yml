@@ -20,8 +20,21 @@ jobs:
           node-version: '21.7.3'
           cache: 'npm'
 
+      - name: cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: install hexo + plugins
-        run: npm install
+        run: |
+          if [ ! -d node_modules ] || [ -z "$(ls -A node_modules 2>/dev/null)" ]; then
+            npm install
+          else
+            echo "node_modules already cached, skipping npm install"
+          fi
 
       - name: generate public
         run: ./node_modules/hexo/bin/hexo g
