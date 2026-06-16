@@ -50,7 +50,7 @@ jobs:
             rm -rf /tmp/blog-staging
             mkdir -p /tmp/blog-staging
 
-      - name: copy public to server
+      - name: copy public to server (staging)
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -69,10 +69,12 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             set -e
-            cd /tmp/blog-staging
-            cp /data/docker-compose/blog/Dockerfile.final .
-            cp /data/docker-compose/blog/ads.txt .
-            cp /data/docker-compose/blog/docker-compose.yaml .
+            # move public from staging into real config dir (overwrite only public/)
+            rm -rf /data/docker-compose/blog/public
+            cp -r /tmp/blog-staging/public /data/docker-compose/blog/public
+            rm -rf /tmp/blog-staging
+            # build & restart in real dir so project name = blog
+            cd /data/docker-compose/blog
             TAG="v$(date +%s)"
             sed -i "s|image: blog:.*|image: blog:${TAG}|g" docker-compose.yaml
             docker build -t "blog:${TAG}" -f Dockerfile.final .
@@ -82,5 +84,3 @@ jobs:
             if [ -n "$OLD" ]; then
               echo "$OLD" | xargs -r docker rmi 2>/dev/null || true
             fi
-            cd /
-            rm -rf /tmp/blog-staging
