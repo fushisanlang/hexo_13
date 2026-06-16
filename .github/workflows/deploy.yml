@@ -39,7 +39,7 @@ jobs:
       - name: generate public
         run: ./node_modules/hexo/bin/hexo g
 
-      - name: clean server public dir
+      - name: prepare server staging dir
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -47,10 +47,10 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            rm -rf /data/docker-compose/blog/public
-            mkdir -p /data/docker-compose/blog/public
+            rm -rf /tmp/blog-staging
+            mkdir -p /tmp/blog-staging
 
-      - name: scp public to server
+      - name: copy public to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -58,7 +58,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: "public"
-          target: "/data/docker-compose/blog/public"
+          target: "/tmp/blog-staging"
 
       - name: build & restart on server
         uses: appleboy/ssh-action@v1
@@ -68,10 +68,19 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /data/docker-compose/blog
+            set -e
+            cd /tmp/blog-staging
+            cp /data/docker-compose/blog/Dockerfile.final .
+            cp /data/docker-compose/blog/ads.txt .
+            cp /data/docker-compose/blog/docker-compose.yaml .
             TAG="v$(date +%s)"
-            docker build -t "blog:${TAG}" -f Dockerfile.final .
             sed -i "s|image: blog:.*|image: blog:${TAG}|g" docker-compose.yaml
+            docker build -t "blog:${TAG}" -f Dockerfile.final .
             docker-compose down
             docker-compose up -d
-            docker images | grep blog | grep -v "${TAG}" | awk '{print $3}' | xargs -r docker rmi
+            OLD=$(docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep '^blog:' | grep -v "^blog:${TAG} " | awk '{print $2}')
+            if [ -n "$OLD" ]; then
+              echo "$OLD" | xargs -r docker rmi 2>/dev/null || true
+            fi
+            cd /
+            rm -rf /tmp/blog-staging
