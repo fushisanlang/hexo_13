@@ -1,0 +1,52 @@
+name: deploy
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '21.7.3'
+          cache: 'npm'
+
+      - name: install hexo + plugins
+        run: npm install --registry=https://registry.npmmirror.com
+
+      - name: generate public
+        run: ./node_modules/hexo/bin/hexo g
+
+      - name: scp public to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "public"
+          target: "/data/docker-compose/blog"
+          rm: true
+
+      - name: build & restart on server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /data/docker-compose/blog
+            TAG="v$(date +%s)"
+            docker build -t "blog:${TAG}" -f Dockerfile.final .
+            sed -i "s|image: blog:.*|image: blog:${TAG}|g" docker-compose.yaml
+            docker-compose down
+            docker-compose up -d
+            docker images | grep blog | grep -v "${TAG}" | awk '{print $3}' | xargs -r docker rmi
