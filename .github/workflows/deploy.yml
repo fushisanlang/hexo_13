@@ -78,7 +78,11 @@ jobs:
             TAG="v$(date +%s)"
             sed -i "s|image: blog:.*|image: blog:${TAG}|g" docker-compose.yaml
             docker build -t "blog:${TAG}" -f Dockerfile.final .
-            docker-compose down
+            # stop+rm any existing blog-40000 (may have been started manually
+            # without docker-compose project label, in which case
+            # 'docker-compose down' won't find it)
+            docker stop blog-40000 2>/dev/null || true
+            docker rm -f blog-40000 2>/dev/null || true
             docker-compose up -d
             OLD=$(docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep '^blog:' | grep -v "^blog:${TAG} " | awk '{print $2}')
             if [ -n "$OLD" ]; then
