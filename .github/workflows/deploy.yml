@@ -31,7 +31,7 @@ jobs:
       - name: install hexo + plugins
         run: |
           if [ ! -d node_modules ] || [ -z "$(ls -A node_modules 2>/dev/null)" ]; then
-            npm install
+            npm install --registry=https://registry.npmmirror.com
           else
             echo "node_modules already cached, skipping npm install"
           fi
