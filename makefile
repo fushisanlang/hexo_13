@@ -7,7 +7,7 @@ pull:
 	git pull
 
 build:
-	docker build . -t blog:v${DATE} 
+	docker build --memory=500m . -t blog:v${DATE} 
 
 update:
 	cd /data/docker-compose/blog && sed -i "s/image:\ blog:.*/image:\ blog:v${DATE}/g"  docker-compose.yaml && docker-compose down && docker-compose up -d
