@@ -39,6 +39,17 @@ jobs:
       - name: generate public
         run: ./node_modules/hexo/bin/hexo g
 
+      - name: clean server public dir
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          port: ${{ secrets.SERVER_PORT }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            rm -rf /data/docker-compose/blog/public
+            mkdir -p /data/docker-compose/blog/public
+
       - name: scp public to server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -47,8 +58,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: "public"
-          target: "/data/docker-compose/blog"
-          rm: true
+          target: "/data/docker-compose/blog/public"
 
       - name: build & restart on server
         uses: appleboy/ssh-action@v1
