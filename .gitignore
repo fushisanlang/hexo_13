@@ -1,7 +1,22 @@
+# dependencies
 node_modules
+
+# build output
 public
-themes
+
+# hexo cache
 db.json
+
+# system
 .DS_Store
+
+# local runtime logs / build artefacts
 blog.log
 buildtime
+
+# themes: only Butterfly is committed; the rest are historical backups
+themes/landscape/
+themes/next/
+themes/hexo-theme-next-master.zip
+themes/*/node_modules
+themes/*/.git
