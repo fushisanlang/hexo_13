@@ -1,4 +1,4 @@
-FROM node AS base
+FROM node:21.7.3 AS base
 WORKDIR /blog
 COPY . .
 RUN npm config set strict-ssl false

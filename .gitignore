@@ -2,3 +2,6 @@ node_modules
 public
 themes
 db.json
+.DS_Store
+blog.log
+buildtime
